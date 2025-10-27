@@ -43,16 +43,8 @@ public class TeleOP extends LinearOpMode {
                 controller::getLeftStickY,
                 controller::getRightStickX,
                 controller::getRightTrigger,
-                () -> barrierRemoval.getState() == Constants.BarrierRemovalState.DOWN,
-                hanging
-        );
-
-        intake = new Intake(
-                hardwareMap,
-                telemetry,
-                () -> controller2.justPressed(GamepadEx.Button.DPAD_UP),
-                () -> controller2.justPressed(GamepadEx.Button.DPAD_LEFT),
-                () -> controller2.justPressed(GamepadEx.Button.DPAD_DOWN),
+//                () -> barrierRemoval.getState() == Constants.BarrierRemovalState.DOWN,
+                () -> false,
                 hanging
         );
 
@@ -67,7 +59,9 @@ public class TeleOP extends LinearOpMode {
                 hardwareMap,
                 telemetry,
                 () -> controller2.justPressed(GamepadEx.Button.RIGHT_BUMPER),
-                () -> controller2.justPressed(GamepadEx.Button.LEFT_BUMPER)
+                () -> false,
+                () -> controller2.getLeftTrigger() > 0.4,
+                () -> controller2.getRightTrigger() > 0.4
         );
 
         hanging = ascent::justStartedAscending;
@@ -75,7 +69,8 @@ public class TeleOP extends LinearOpMode {
         barrierRemoval = new BarrierRemoval(
                 hardwareMap,
                 telemetry,
-                () -> controller2.justPressed(GamepadEx.Button.X)
+                () -> controller2.justPressed(GamepadEx.Button.X),
+                () -> controller2.justPressed(GamepadEx.Button.LEFT_BUMPER)
         );
 
         barrierDrive = new BarrierDrive(
@@ -88,6 +83,15 @@ public class TeleOP extends LinearOpMode {
                 hardwareMap,
                 telemetry,
                 () -> controller2.justPressed(GamepadEx.Button.B),
+                hanging
+        );
+
+        intake = new Intake(
+                hardwareMap,
+                telemetry,
+                () -> controller2.justPressed(GamepadEx.Button.DPAD_UP),
+                () -> controller2.justPressed(GamepadEx.Button.DPAD_LEFT),
+                () -> controller2.justPressed(GamepadEx.Button.DPAD_DOWN),
                 hanging
         );
 
@@ -109,12 +113,12 @@ public class TeleOP extends LinearOpMode {
 
             // ------------------------------- Subsystem Updates -------------------------------- //
             drivetrain.update();
-            intake.update();
+            intake.update(compartment.getState());
             accelerator.update();
             ascent.update();
             barrierRemoval.update();
             barrierDrive.update();
-            compartment.update();
+            compartment.update(intake.getState());
 
             telemetry.update();
         }

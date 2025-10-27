@@ -10,7 +10,7 @@ import java.util.function.BooleanSupplier;
 
 public class Compartment {
     private ServoImplEx wheel1, wheel2;
-    private Constants.CompartmentWheelState state = Constants.CompartmentWheelState.CLOSED;
+    public Constants.CompartmentWheelState state = Constants.CompartmentWheelState.CLOSED;
     private boolean firstTime = true;
 
     private BooleanSupplier btn, just_hanging;
@@ -25,7 +25,7 @@ public class Compartment {
         this.just_hanging = just_hanging;
     }
 
-    public void update() {
+    public void update(Constants.IntakeState intakeState) {
         if(btn.getAsBoolean()) {
             if(state == Constants.CompartmentWheelState.OPEN) setState(Constants.CompartmentWheelState.CLOSED);
             else setState(Constants.CompartmentWheelState.OPEN);
@@ -41,6 +41,8 @@ public class Compartment {
         }
 
         if(just_hanging.getAsBoolean()) setState(Constants.CompartmentWheelState.CLOSED);
+
+        if(intakeState != Constants.IntakeState.STOPPED) setState(Constants.CompartmentWheelState.OPEN);
     }
 
     public void setState(Constants.CompartmentWheelState state) {
@@ -48,5 +50,9 @@ public class Compartment {
         this.state = state;
         wheel1.setPosition(state.getPosition(Constants.CompartmentWheel.WHEEL1));
         wheel2.setPosition(state.getPosition(Constants.CompartmentWheel.WHEEL2));
+    }
+
+    public Constants.CompartmentWheelState getState() {
+        return state;
     }
 }

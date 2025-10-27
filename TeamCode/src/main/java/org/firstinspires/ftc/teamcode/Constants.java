@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 public class Constants {
-    public static final String ROBOT_NAME = "Racing1.0";
+    public static final String ROBOT_NAME = "Artemis";
 
     // ----------------------------- Drivebase Motors Configuration ----------------------------- //
     public static final String LEFT_MOTOR_NAME = "lm";
@@ -9,7 +9,7 @@ public class Constants {
 
     // -------------------------- DriveBase Constants Configuration ----------------------------- //
     public static final double KS_theta = 0.0; // Static gain for turning
-    public static final double DEFAULT_POWER = 0.55; // Default power for driving
+    public static final double DEFAULT_POWER = 0.65; // Default power for driving
     public static final double MAX_POWER = 1.0; // Maximum power for driving
 
     public enum Motor {
@@ -19,8 +19,8 @@ public class Constants {
         // Feedforward constants
         // KS: is the static gain -> for Static Friction
         // KV: is the velocity gain -> Fixes Motor Inaccuracies Linearly
-        public static final double[] KS = {0.05, 0.11};
-        public static final double[] KV = {0.96, 1.086};
+        public static final double[] KS = {0.05, 0.05};
+        public static final double[] KV = {1.02, 0.98};
 
         private final int idx;
 
@@ -62,7 +62,7 @@ public class Constants {
     public static final String BARRIER_REMOVAL_MOTOR2_NAME = "barrier2";
 
     public static final double BARRIER_RUN_POWER = 0.7;
-    public static final double BARRIER_HOLD_POWER = 0.1;
+    public static final double BARRIER_HOLD_POWER = 0.05;
 
 
     public enum BarrierRemovalState {
@@ -93,7 +93,7 @@ public class Constants {
             this.idx = idx;
         }
 
-        double[][] positions = {{0.0, 0.63}, {0.88, 0.1}};
+        double[][] positions = {{0.0, 0.37}, {1.0, 0.63}};
 
         public double getPosition(BarrierServo servo) {
             return positions[servo.getIdx()][idx];
@@ -134,7 +134,7 @@ public class Constants {
     }
     // ----------------------------------------- Ascent ----------------------------------------- //
     public static final String ASCENT_MOTOR_NAME = "ascent";
-    public static double ACCEL_ENABLE_TIMESTAMP = 10.0;
+    public static final String ASCENT_SLIDER_MOTOR_NAME = "slider";
     public enum AscentState {
         STOPPED(0),
         ASCENDING(1),
@@ -149,6 +149,22 @@ public class Constants {
 
         public double getVelocity() {
             return VELOCITIES[idx];
+        }
+    }
+
+    public enum AscentGuideState {
+        AIM(0),
+        SECURE(1);
+
+        private final int idx;
+        public static final double[] POSITIONS = {0.0, 0.32};
+
+        AscentGuideState(int idx) {
+            this.idx = idx;
+        }
+
+        public double getPosition() {
+            return POSITIONS[idx];
         }
     }
     // -------------------------------------- Compartment --------------------------------------- //
@@ -176,8 +192,8 @@ public class Constants {
 
         private final int idx;
         public static final double[][] POSITIONS = {
-                {0.0, 1.0},
-                {0.0, 1.0}
+                {0.15, 1.0},
+                {0.15, 1.0}
         };
 
         CompartmentWheelState(int idx) {

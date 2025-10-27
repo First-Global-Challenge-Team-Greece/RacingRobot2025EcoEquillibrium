@@ -34,6 +34,7 @@ public class Intake {
     ) {
         intakeMotor = hm.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
         intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.forwardButton = forwardButton;
         this.stopButton = stopButton;
@@ -43,30 +44,32 @@ public class Intake {
         this.telemetry = telemetry;
     }
 
-    public void update() {
+    public void update(Constants.CompartmentWheelState compState) {
         disabled = hanging.getAsBoolean() | disabled;
 
         if(hanging.getAsBoolean()) {
             setState(Constants.IntakeState.STOPPED);
-            intakeMotor.setMotorDisable();
+//            intakeMotor.setMotorDisable();
         }
 
         if (disabled) return;
 
         // Set Intake State according to button presses
-//        if(forwardButton.getAsBoolean()) setState(Constants.IntakeState.FORWARD);
-//        if(stopButton.getAsBoolean()) setState(Constants.IntakeState.STOPPED);
-//        if(reverseButton.getAsBoolean()) setState(Constants.IntakeState.REVERSE);
+        if(forwardButton.getAsBoolean()) setState(Constants.IntakeState.FORWARD);
+        if(stopButton.getAsBoolean()) setState(Constants.IntakeState.STOPPED);
+        if(reverseButton.getAsBoolean()) setState(Constants.IntakeState.REVERSE);
 
-        if(forwardButton.getAsBoolean()) {
-            state = state != Constants.IntakeState.FORWARD ? Constants.IntakeState.FORWARD :
-                    Constants.IntakeState.STOPPED;
-        }
+//        if(forwardButton.getAsBoolean()) {
+//            state = state != Constants.IntakeState.FORWARD ? Constants.IntakeState.FORWARD :
+//                    Constants.IntakeState.STOPPED;
+//        }
+//
+//        if(reverseButton.getAsBoolean()) {
+//            state = state != Constants.IntakeState.REVERSE ? Constants.IntakeState.REVERSE :
+//                    Constants.IntakeState.STOPPED;
+//        }
 
-        if(reverseButton.getAsBoolean()) {
-            state = state != Constants.IntakeState.REVERSE ? Constants.IntakeState.REVERSE :
-                    Constants.IntakeState.STOPPED;
-        }
+        if(compState == Constants.CompartmentWheelState.CLOSED) setState(Constants.IntakeState.STOPPED);
 
         // Set motor power based on state
         setPower(state.getVelocity());
